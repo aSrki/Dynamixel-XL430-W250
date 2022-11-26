@@ -11,7 +11,7 @@ portHandler.setBaudRate(57600)
 
 handler = Protocol2PacketHandler()
 
-#Diable torque in order to set operating mode
+#Disable torque in order to set operating mode
 communication_result, servo_error = handler.write1ByteTxRx(portHandler, 1, 64, 0)
 print("TORQUE : %s" % handler.getTxRxResult(communication_result))
 if servo_error != 0:
