@@ -8,7 +8,7 @@ Dynamixel XL430-W250 driver, based on Dynamixel SDK, written in Python.
 Here is a table of adresses that are used in this example.
 
 |Name            |ADDR |  Value |Num of bytes TXRx|
-|-------------------------------------------------|
+|----------------|-----|--------|-----------------|
 |Goal Position   | 116 | 0-4095 |         4       |
 |Torque          |  64 | 0 or 1 |         1       |
 |LED             |  65 | 0 or 1 |         1       |
