@@ -5,7 +5,7 @@
   3. Now  you have succesfully installed setup and you can continue to work with the SDK.
 
 # Useful Registry Adresses
-  Here is a table of adresses that are used in this example.
+  Here is a table of registry adresses that are used in this project.
 
 |Name            |ADDR |  Value |Num of bytes TXRx| Comment
 |----------------|-----|--------|-----------------|-------------------------------------------------------------------------------------------------------|
