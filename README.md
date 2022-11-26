@@ -9,8 +9,8 @@ Here is a table of adresses that are used in this example.
 
 |Name            |ADDR |  Value |Num of bytes TXRx|
 |----------------|-----|--------|-----------------|
-|Goal Position   | 116 | 0-4095 |         4       |
+|Goal Position   | 116 | 0-4095 |         4       | ot in case of multiturn mode -2,147,483,648 - 2,147,483,647
 |Torque          |  64 | 0 or 1 |         1       |
 |LED             |  65 | 0 or 1 |         1       |
-|Operating Mode  |  11 | 3 or 4 |         4       |
-|Velocity        | 112 | xxxxxx |         4       |
+|Operating Mode  |  11 | 3 or 4 |         4       | - 3 is used for single turn(0-4095), and 4 for multiturn mode (-2,147,483,648 - 2,147,483,647)
+|Velocity        | 112 | xxxxxx |         4       | - This parameter edits the profile which velocity follows, see official Dynamixel website for details.
