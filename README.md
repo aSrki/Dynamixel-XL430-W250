@@ -19,10 +19,9 @@
   It is important to mention that the order of apperance of parts of code is EXTREMLY important (ask me how i know...) so if you change anything be aware that some errors may occure because of that.
   
 ### Order of operation
-/*:
 - First and foremost, Torque enabled must be set to 0 in order to choose Operating mode. 
 - Then, after choosing the mode (Single-turn or Multi-turn) you can set the Tourque enabled to 1.
 - Because I wanted the LED to be turned on while Dynamixel is turning, firstly it needs to be turned off, and then after setting Goal position, LED turns on and code checks if Dynamixel has achieved given position, and if it is within giver error (10 pulses / 0.88 deg) the LED turns off again.
-:/
+
   
  Happy coding :)
