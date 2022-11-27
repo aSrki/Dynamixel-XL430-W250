@@ -17,6 +17,12 @@ if(test):
 
         handler = Protocol2PacketHandler()
 
+        #Disable torque in order to set operating mode
+        communication_result, servo_error = handler.write1ByteTxRx(portHandler, 1, 64, 0)
+        print("TORQUE : %s" % handler.getTxRxResult(communication_result))
+        if servo_error != 0:
+            print("TORQUE : %s" % handler.getRxPacketError(servo_error))
+
         #turning the led off
         current_position = 10000000000000
 
