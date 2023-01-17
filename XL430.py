@@ -13,7 +13,7 @@ if(test):
         portHandler = PortHandler(SERVO_PORT)
         portHandler.openPort()
         #Baud rate set via Wizard (default value is 57600)
-        portHandler.setBaudRate(57600)
+        portHandler.setBaudRate(115200)
 
         handler = Protocol2PacketHandler()
 
@@ -79,7 +79,7 @@ class ServoXL430:
         self.portHandler = PortHandler(SERVO_PORT)
         self.portHandler.openPort()
         #Baud rate set via Wizard (default value is 57600)
-        self.portHandler.setBaudRate(57600)
+        self.portHandler.setBaudRate(115200)
 
         self.handler = Protocol2PacketHandler()
 
