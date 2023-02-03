@@ -1,6 +1,6 @@
 ## Dynamixel XL430-W250 driver
   Dynamixel XL430-W250 driver, based on Dynamixel SDK, written in Python.
-  1. First step for You is to download Dynamixel SDK from their GitHub.
+  1. First step for You is to download Dynamixel SDK from their GitHub : https://github.com/ROBOTIS-GIT/DynamixelSDK.
   2. Then in your file manager go to /home/[your-user-name]/[path-to-your-downloaded-folder]/DynamixelServoXL430/DynamixelSDK_master/python, and open terminal. Run ``` sudo python3 setup.py install ```
   3. Now  you have succesfully installed setup and you can continue to work with the SDK.
 
