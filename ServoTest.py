@@ -1,11 +1,10 @@
 from XL430 import *
+import time
 
-s1 = ServoXL430(1, 100, "m")
-s2 = ServoXL430(2, 30, "m")
 
-# s1.rotate(360, 100, 0)
-# s1.rotate(0, 70, 0)
-# s1.rotate(360, 40, 0)
-# s1.rotate(0, 10, 0)
 
-s1.rotate(0, 100)
+parallel_rotate(7, 12, "s", "s", 0, 0)
+time.sleep(2)
+parallel_rotate(7, 12, "m", "m", 500, 700)
+time.sleep(2)
+parallel_rotate(7, 12, "m", "m", 0, 0)
