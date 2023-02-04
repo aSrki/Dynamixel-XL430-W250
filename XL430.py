@@ -2,10 +2,18 @@ from dynamixel_sdk import *
 import sys
 import time
 
-def parallel_rotate(id1, id2, m1, m2, angle1, angle2):
+def parallel_rotate(ids, angles):
     angle1 = int((angle1 / 360)*4095)
     angle2 = int((angle2 / 360)*4095)
-    SERVO_PORT = "/dev/ttyACM0"
+    SERVO_PORT = "/dev/ttyUSB0"
+    
+    m = []
+
+    for i in range(len(ids)):
+        if id[i] == 2 or id[i] == 4:
+            m[i] = "m"
+        else:
+            m[i] = "s"
 
     portHandler = PortHandler(SERVO_PORT)
     portHandler.openPort()
@@ -15,92 +23,53 @@ def parallel_rotate(id1, id2, m1, m2, angle1, angle2):
 
     handler = Protocol2PacketHandler()
 
-    communication_result, servo_error = handler.write1ByteTxRx(portHandler, id1, 64, 0)
-    print("TORQUE : %s" % handler.getTxRxResult(communication_result))
-    if servo_error != 0:
-        print("TORQUE : %s" % handler.getRxPacketError(servo_error))
-
-    # Choosing operating mode
-    if(m1 == "m"):
-        print("Multi mode on")
-        communication_result, servo_error = handler.write1ByteTxRx(
-            portHandler, id1, 11, 4)
-        print("MULTIMODE : %s" %
-                handler.getTxRxResult(communication_result))
+    for id in ids:
+        communication_result, servo_error = handler.write1ByteTxRx(portHandler, id, 64, 0)
+        print("TORQUE : %s" % handler.getTxRxResult(communication_result))
         if servo_error != 0:
+            print("TORQUE : %s" % handler.getRxPacketError(servo_error))
+
+    for i in range(len(ids)):
+        # Choosing operating mode
+        if(m[i] == "m"):
+            print("Multi mode on")
+            communication_result, servo_error = handler.write1ByteTxRx(
+                portHandler, ids[i], 11, 4)
             print("MULTIMODE : %s" %
-                    handler.getRxPacketError(servo_error))
-    else:
-        print("Single mode on")
-        communication_result, servo_error = handler.write1ByteTxRx(
-            portHandler, id1, 11, 3)
-        print("SINGLEMODE : %s" %
-                handler.getTxRxResult(communication_result))
-        if servo_error != 0:
+                    handler.getTxRxResult(communication_result))
+            if servo_error != 0:
+                print("MULTIMODE : %s" %
+                        handler.getRxPacketError(servo_error))
+        else:
+            print("Single mode on")
+            communication_result, servo_error = handler.write1ByteTxRx(
+                portHandler, ids[i], 11, 3)
             print("SINGLEMODE : %s" %
-                    handler.getRxPacketError(servo_error))
+                    handler.getTxRxResult(communication_result))
+            if servo_error != 0:
+                print("SINGLEMODE : %s" %
+                        handler.getRxPacketError(servo_error))
 
-    # Enabling torque in order to set position goal and velocity
-    communication_result, servo_error = handler.write1ByteTxRx(
-        portHandler, id1, 64, 1)
-    print("TORQUE : %s" % handler.getTxRxResult(communication_result))
-    if servo_error != 0:
-        print("TORQUE : %s" % handler.getRxPacketError(servo_error))
-
-    communication_result, servo_error = handler.write1ByteTxRx(
-            portHandler, id2, 64, 0)
-    print("TORQUE : %s" % handler.getTxRxResult(communication_result))
-    if servo_error != 0:
-        print("TORQUE : %s" % handler.getRxPacketError(servo_error))
-
-    # Choosing operating mode
-    if(m2 == "m"):
-        print("Multi mode on")
+        # Enabling torque in order to set position goal and velocity
         communication_result, servo_error = handler.write1ByteTxRx(
-            portHandler, id2, 11, 4)
-        print("MULTIMODE : %s" %
-                handler.getTxRxResult(communication_result))
+            portHandler, ids[i], 64, 1)
+        print("TORQUE : %s" % handler.getTxRxResult(communication_result))
         if servo_error != 0:
-            print("MULTIMODE : %s" %
-                    handler.getRxPacketError(servo_error))
-    else:
-        print("Single mode on")
-        communication_result, servo_error = handler.write1ByteTxRx(
-            portHandler, id2, 11, 3)
-        print("SINGLEMODE : %s" %
-                handler.getTxRxResult(communication_result))
-        if servo_error != 0:
-            print("SINGLEMODE : %s" %
-                    handler.getRxPacketError(servo_error))
+            print("TORQUE : %s" % handler.getRxPacketError(servo_error))
 
-    # Enabling torque in order to set position goal and velocity
-    communication_result, servo_error = handler.write1ByteTxRx(
-        portHandler, id2, 64, 1)
-    print("TORQUE : %s" % handler.getTxRxResult(communication_result))
-    if servo_error != 0:
-        print("TORQUE : %s" % handler.getRxPacketError(servo_error))
-
-    dxl_goal_position = [angle1, angle2]
+    dxl_goal_position = angles
 
     groupSyncWrite = GroupSyncWrite(portHandler, handler, 116, 4)
 
-    # Allocate Dynamixel#1 goal position value into byte array
-    param_goal_position = [DXL_LOBYTE(DXL_LOWORD(dxl_goal_position[0])), DXL_HIBYTE(DXL_LOWORD(dxl_goal_position[0])), DXL_LOBYTE(DXL_HIWORD(dxl_goal_position[0])), DXL_HIBYTE(DXL_HIWORD(dxl_goal_position[0]))]
+    for i in range(len(ids)):
+        # Allocate Dynamixel#1 goal position value into byte array
+        param_goal_position = [DXL_LOBYTE(DXL_LOWORD(dxl_goal_position[i])), DXL_HIBYTE(DXL_LOWORD(dxl_goal_position[i])), DXL_LOBYTE(DXL_HIWORD(dxl_goal_position[i])), DXL_HIBYTE(DXL_HIWORD(dxl_goal_position[i]))]
 
-    # Add Dynamixel#1 goal position value to the Syncwrite parameter storage
-    dxl_addparam_result = groupSyncWrite.addParam(id1, param_goal_position)
-    if dxl_addparam_result != True:
-        print("[ID:%03d] groupSyncWrite addparam failed" % id1)
-        quit()
-
-    # Allocate Dynamixel#2 goal position value into byte array
-    param_goal_position = [DXL_LOBYTE(DXL_LOWORD(dxl_goal_position[1])), DXL_HIBYTE(DXL_LOWORD(dxl_goal_position[1])), DXL_LOBYTE(DXL_HIWORD(dxl_goal_position[1])), DXL_HIBYTE(DXL_HIWORD(dxl_goal_position[1]))]
-    
-    # Add Dynamixel#2 goal position value to the Syncwrite parameter storage
-    dxl_addparam_result = groupSyncWrite.addParam(id2, param_goal_position)
-    if dxl_addparam_result != True:
-        print("[ID:%03d] groupSyncWrite addparam failed" % id2)
-        quit()
+        # Add Dynamixel#1 goal position value to the Syncwrite parameter storage
+        dxl_addparam_result = groupSyncWrite.addParam(ids[i], param_goal_position)
+        if dxl_addparam_result != True:
+            print("[ID:%03d] groupSyncWrite addparam failed" % ids[i])
+            quit()
 
     # Syncwrite goal position
     dxl_comm_result = groupSyncWrite.txPacket()
