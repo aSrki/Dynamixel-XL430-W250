@@ -24,9 +24,7 @@
 - Because I wanted the LED to be turned on while Dynamixel is turning, firstly it needs to be turned off, and then after setting Goal position, LED turns on and code checks if Dynamixel has achieved given position, and if it is within given error (10 pulses / 0.88 deg) the LED turns off again.
 
 ### Group sync write
-- This functionality is easily added using group_sync_wrtie.py file (library). In order to achieve wanted funtionality You just need to make instance of GroupSyncWrite class, then transform data (in my case angles) in byte arrays, add them as parameters to instance of above mentioned class, and finally send them to Your Dynamixel Servos
-- Then, after choosing the mode (Single-turn or Multi-turn) you can set the Tourque enabled to 1.
-- Because I wanted the LED to be turned on while Dynamixel is turning, firstly it needs to be turned off, and then after setting Goal position, LED turns on and code checks if Dynamixel has achieved given position, and if it is within given error (10 pulses / 0.88 deg) the LED turns off again.
+- This functionality is easily added using group_sync_wrtie.py file (library). In order to achieve wanted funtionality You just need to make instance of GroupSyncWrite class, then transform data (in my case angles) in byte arrays, add them as parameters to instance of above mentioned class, and finally send them to Your Dynamixel Servos.
 
   
  Happy coding :)
