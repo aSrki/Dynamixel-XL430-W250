@@ -2,6 +2,70 @@ from dynamixel_sdk import *
 import sys
 import time
 
+SERVO_PORT = "/dev/ttyUSB0"
+BAUD_RATE = 115200
+TORQUE_ADDR = 64
+OPERATING_MODE_ADDR = 11
+PROFILE_VELOCITY_ADDR = 112
+
+def send_velocity_multiple(ids, vels):
+    vels[0] = int((vels[0] / 100)*32767)
+    vels[1] = int((vels[1] / 100)*32767)
+    
+    portHandler = PortHandler(SERVO_PORT)
+    portHandler.openPort()
+   
+
+    # Baud rate set via Wizard (default value is 57600)
+    portHandler.setBaudRate(BAUD_RATE)
+
+    handler = Protocol2PacketHandler()
+
+    for id in ids:
+        communication_result, servo_error = handler.write1ByteTxRx(portHandler, id, TORQUE_ADDR, 0)
+        print("TORQUE : %s" % handler.getTxRxResult(communication_result))
+        if servo_error != 0:
+            print("TORQUE : %s" % handler.getRxPacketError(servo_error))
+
+    for i in range(len(ids)):
+        print("Single mode on")
+        communication_result, servo_error = handler.write1ByteTxRx(
+            portHandler, ids[i], OPERATING_MODE_ADDR, 1) # speed control mode
+        print("SINGLEMODE : %s" %
+                handler.getTxRxResult(communication_result))
+        if servo_error != 0:
+            print("SINGLEMODE : %s" %
+                    handler.getRxPacketError(servo_error))
+
+        # Enabling torque in order to set position goal and velocity
+        communication_result, servo_error = handler.write1ByteTxRx(
+            portHandler, ids[i], TORQUE_ADDR, 1)
+        print("TORQUE : %s" % handler.getTxRxResult(communication_result))
+        if servo_error != 0:
+            print("TORQUE : %s" % handler.getRxPacketError(servo_error))
+
+    dxl_goal_vel = vels
+
+    groupSyncWrite = GroupSyncWrite(portHandler, handler, PROFILE_VELOCITY_ADDR, 4)
+
+    for i in range(len(ids)):
+        # Allocate Dynamixel#1 goal position value into byte array
+        param_goal_position = [DXL_LOBYTE(DXL_LOWORD(dxl_goal_vel[i])), DXL_HIBYTE(DXL_LOWORD(dxl_goal_vel[i])), DXL_LOBYTE(DXL_HIWORD(dxl_goal_vel[i])), DXL_HIBYTE(DXL_HIWORD(dxl_goal_vel[i]))]
+
+        # Add Dynamixel#1 goal position value to the Syncwrite parameter storage
+        dxl_addparam_result = groupSyncWrite.addParam(ids[i], param_goal_position)
+        if dxl_addparam_result != True:
+            print("[ID:%03d] groupSyncWrite addparam failed" % ids[i])
+            quit()
+
+    # Syncwrite goal position
+    dxl_comm_result = groupSyncWrite.txPacket()
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % handler.getTxRxResult(dxl_comm_result))
+
+    # Clear syncwrite parameter storage
+    groupSyncWrite.clearParam()
+
 def parallel_rotate(ids, angles):
     angle1 = int((angle1 / 360)*4095)
     angle2 = int((angle2 / 360)*4095)
